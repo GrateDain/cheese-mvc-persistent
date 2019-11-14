@@ -17,11 +17,10 @@ public class Menu {
     private int id;
 
     @NotNull
-    @Size(min=3, max=15)
+    @Size(min=3, max=25)
     private String name;
 
     @ManyToMany
-    @NotNull
     private List<Cheese> cheeses;
 
     public Menu(String name) {
