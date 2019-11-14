@@ -37,15 +37,16 @@ public class CategoryController {
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public String processAddCategoryForm(@ModelAttribute @Valid Category category,
-                                         Errors errors, Model model) {
+    public String processAddCategoryForm(@ModelAttribute @Valid Category newCategory,
+                                         Errors errors,
+                                         Model model) {
 
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Category");
             return "category/add";
         }
 
-        categoryDao.save(category);
+        categoryDao.save(newCategory);
         return "redirect:";
     }
 }
