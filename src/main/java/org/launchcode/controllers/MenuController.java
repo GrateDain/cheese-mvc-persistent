@@ -55,20 +55,13 @@ public class MenuController {
         }
 
         menuDao.save(newMenu);
-        int id = newMenu.getId();
-
-        return "redirect:view/" + id;
+        return "redirect:view/" + newMenu.getId();
     }
 
     @RequestMapping(value = "view/{menuId}", method = RequestMethod.GET)
-    public String viewMenu(Model model, @RequestParam int menuId) {
+    public String viewMenu(Model model, @PathVariable int menuId) {
 
-        Menu theMenu = new Menu();
-
-        Optional<Menu> m = menuDao.findById(menuId);
-        if(m.isPresent()) {
-            theMenu = m.get();
-        }
+        Menu theMenu = menuDao.findById(menuId).orElse(null);
 
         List<Cheese> cheeses = theMenu.getCheeses();
         model.addAttribute("cheeses", cheeses);
@@ -80,12 +73,7 @@ public class MenuController {
     @RequestMapping(value = "add-item/{menuId}", method = RequestMethod.GET)
     public String addItem(Model model, @PathVariable int menuId) {
 
-        Menu theMenu = new Menu();
-
-        Optional<Menu> m = menuDao.findById(menuId);
-        if(m.isPresent()) {
-            theMenu = m.get();
-        }
+        Menu theMenu = menuDao.findById(menuId).orElse(null);
 
         AddMenuItemForm form = new AddMenuItemForm(cheeseDao.findAll(), theMenu);
         model.addAttribute("title", "Add item to menu: " + theMenu.getName());
@@ -102,20 +90,12 @@ public class MenuController {
             return "menu/add-item";
         }
 
-        Cheese theCheese= new Cheese();
-        Menu theMenu = new Menu();
-
-        Optional<Cheese> c = cheeseDao.findById(form.getCheeseId());
-        if(c.isPresent()) {
-            theCheese = c.get();
-        }
-        Optional<Menu> m = menuDao.findById(form.getMenuId());
-        if(m.isPresent()) {
-            theMenu = m.get();
-        }
+        Cheese theCheese = cheeseDao.findById(form.getCheeseId()).orElse(null);
+        Menu theMenu = menuDao.findById(form.getMenuId()).orElse(null);
 
         theMenu.addItem(theCheese);
         menuDao.save(theMenu);
+
         return "redirect:/menu/view/" + theMenu.getId();
     }
 }
